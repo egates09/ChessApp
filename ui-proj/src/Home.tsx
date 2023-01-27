@@ -74,11 +74,11 @@ export default function Home() {
                 !loading &&
                 <Segment inverted style={{ padding: '2% 0' }}>
                     <Container>
-                        <Grid>
+                        <Grid textAlign="center">
                             <Grid.Row columns={2} style={{ display: 'flex', alignItems: 'center' }}>
-                                <Grid.Column textAlign="center">
+                                <Grid.Column textAlign="center" width={6}>
+                                    {/* <Button color="blue" href={playerData.url} target="_blank">View Profile</Button> */}
                                     <Card color='pink'>
-
                                         <Reveal animated='move up'>
                                             <Reveal.Content visible>
                                                 <Image src={playerData.avatar} size="large" />
@@ -102,9 +102,6 @@ export default function Home() {
                                                 <br />
                                                 "That's the guy who is bad at chess."
                                             </Card.Description>
-                                        </Card.Content>
-                                        <Card.Content extra>
-                                            {/* <Button color="blue" href={playerData.url} target="_blank">View Profile</Button> */}
                                         </Card.Content>
                                     </Card>
                                 </Grid.Column>
