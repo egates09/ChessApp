@@ -16,7 +16,7 @@ export default function Navbar() {
             </Menu.Item>
             <Menu.Item
                 active={activeItem === 'games'}>
-                <Link onClick={() => handleMenuClick('games')} to='/games'>Chess.com Games</Link>
+                <Link onClick={() => handleMenuClick('games')} to='/games'>Recent Games and Data</Link>
             </Menu.Item>
         </Menu>
     )

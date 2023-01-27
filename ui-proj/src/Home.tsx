@@ -94,7 +94,7 @@ export default function Home() {
                                                 <Flag style={{ marginLeft: '2%' }} name='us' />
                                             </Card.Header>
                                             <Card.Meta>
-                                                <span className='date'>Last Online: {moment.unix(playerData.last_online).format("MM/DD/YYYY, h:mm:ss A")}</span>
+                                                <span className='date'>Last Online: {moment.unix(playerData.last_online).format("MM/DD/YYYY, h:mm A")}</span>
                                             </Card.Meta>
                                             <Card.Description>
                                                 You need people like me so you can point your fingers and say,
