@@ -21,9 +21,6 @@ export default function GamesList() {
     let lineDataArray: number[] = [];
     let lineDataLabels: string[] = [];
 
-    let lineTestData: number[] = [1000, 1200, 1100, 1050, 1250, 1150];
-    let lineTestLabel: string[] = ["egates09 vs. T", "egates09 vs. A", "egates09 vs. F", "egates09 vs. B", "egates09 vs. G", "egates09 vs. Q"];
-
     const pieData = {
         labels: ['Wins', 'Losses'],
         datasets: [
@@ -44,31 +41,24 @@ export default function GamesList() {
     };
 
     const lineData = {
-        // labels: lineDataLabels,
-        labels: lineTestLabel,
+        labels: lineDataLabels,
         datasets: [
             {
                 axis: 'x',
                 label: 'ELO',
-                // data: lineDataArray,
-                data: lineTestData,
-                // {
-                //     data: lineDataArray,
-                //     min: 800,
-                //     max: 1200
-                // },
+                data: lineDataArray,
                 borderColor: 'rgb(52, 110, 235)',
                 backgroundColor: 'rgba(52, 110, 235, 0.5)'
             }
         ]
     };
 
+    const [line, setLine] = useState(lineData)
+
     const lineOptions = {
         responsive: true,
         config: {
-            type: 'line',
-            // data: lineTestData,
-            // data: lineData,
+            type: 'line'
         },
         plugins: {
             legend: {
@@ -81,12 +71,12 @@ export default function GamesList() {
         },
         scales: {
             y: {
-                min: 800,
-                max: 1400
+                min: 950,
+                max: 1250
             },
             x: {
                 ticks: {
-                    display: false //this will remove only the label
+                    display: false
                 }
             }
         }
@@ -115,25 +105,29 @@ export default function GamesList() {
     }
 
     const calculateLineChart = (data: ChessGames) => {
-        data.games.map((e, i) => {
-            if (i < 5) {
-                if (e.white.username === 'egates09') {
-                    lineDataArray.push(e.white.rating)
-                }
-                else {
-                    lineDataArray.push(e.black.rating)
-                }
-
-                lineDataLabels.push(e.white.username + " vs. " + e.black.username)
+        data.games.map((e) => {
+            if (e.white.username === 'egates09') {
+                lineDataArray.push(e.white.rating)
+            }
+            else {
+                lineDataArray.push(e.black.rating)
             }
 
+            lineDataLabels.push(e.white.username + " vs. " + e.black.username)
         })
 
-        // lineDataArray = lineDataArray.reverse();
-        // lineDataLabels = lineDataLabels.reverse();
-
-        console.log(lineDataArray);
-        console.log(lineDataLabels);
+        setLine({
+            labels: lineDataLabels,
+            datasets: [
+                {
+                    axis: 'x',
+                    label: 'ELO',
+                    data: lineDataArray,
+                    borderColor: 'rgb(52, 110, 235)',
+                    backgroundColor: 'rgba(52, 110, 235, 0.5)'
+                }
+            ]
+        })
     }
 
     useEffect(() => {
@@ -191,7 +185,9 @@ export default function GamesList() {
                         <Pie data={pieData} />
                     </Grid.Column>
                     <Grid.Column width={11}>
-                        <Line options={lineOptions} data={lineData} />
+                        <Line options={lineOptions}
+                            data={line}
+                        />
                     </Grid.Column>
                     <Grid.Column width={1} />
                 </Grid.Row>
