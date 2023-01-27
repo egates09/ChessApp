@@ -207,7 +207,14 @@ export default function GamesList() {
     const getGames = async () => {
         await fetch(`https://api.chess.com/pub/player/egates09/games/${year}/${month}`)
             .then((response) => response.json())
-            .then((data) => { setGames(data); calculateWinLoss(data); calculateLineChart(data) })
+            .then((data) => { populateGameData(data); calculateWinLoss(data); calculateLineChart(data) })
+    }
+
+    const populateGameData = (data: ChessGames) => {
+        let newData = defaultChessGames;
+        newData.games = data.games.reverse();
+
+        setGames(newData);
     }
 
     const calculateWinLoss = (data: ChessGames) => {
@@ -320,14 +327,13 @@ export default function GamesList() {
         <>
             <Divider inverted horizontal>Recent Games {`(${month}/${year})`} </Divider>
 
-            <div style={{ padding: '2%', height: '350px', overflowY: 'auto', paddingLeft: '16%', paddingRight: '16%' }}>
+            <div style={{ padding: '2%', height: '350px', overflowY: 'auto', paddingLeft: '12%', paddingRight: '12%' }}>
                 <Grid>
                     {
                         games.games.map((game, i) => {
                             return (
                                 <Grid.Row key={i} style={{ padding: 0 }}>
                                     <Grid.Column>
-
                                         <List divided relaxed>
                                             <List.Item>
                                                 <List.Content verticalAlign='middle'>
@@ -345,7 +351,6 @@ export default function GamesList() {
                                                 </List.Content>
                                             </List.Item>
                                         </List>
-
                                     </Grid.Column>
                                 </Grid.Row>
                             )
