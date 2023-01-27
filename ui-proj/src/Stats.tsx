@@ -101,12 +101,12 @@ export default function Stats(props: StatsProps) {
                 <Statistic size='mini' color='violet' inverted>
                     <Statistic.Value>{props.data.chess_blitz.last.rating}</Statistic.Value>
                     <Statistic.Label>Current Blitz Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_blitz.last.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_blitz.last.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
                 <Statistic size='mini' color='orange' inverted>
                     <Statistic.Value>{props.data.chess_blitz.best.rating}</Statistic.Value>
                     <Statistic.Label>Best Blitz Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_blitz.best.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_blitz.best.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
             </div>
 
@@ -116,12 +116,12 @@ export default function Stats(props: StatsProps) {
                 <Statistic size='mini' color='violet' inverted style={{ marginBottom: '0' }}>
                     <Statistic.Value>{props.data.chess_bullet.last.rating}</Statistic.Value>
                     <Statistic.Label>Current Bullet Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_bullet.last.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_bullet.last.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
                 <Statistic size='mini' color='orange' inverted style={{ marginBottom: '0' }}>
                     <Statistic.Value>{props.data.chess_bullet.best.rating}</Statistic.Value>
                     <Statistic.Label>Best Bullet Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_bullet.best.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_bullet.best.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
             </div>
 
@@ -131,12 +131,12 @@ export default function Stats(props: StatsProps) {
                 <Statistic size='mini' color='violet' inverted style={{ marginBottom: '0' }}>
                     <Statistic.Value>{props.data.chess_rapid.last.rating}</Statistic.Value>
                     <Statistic.Label>Current Rapid Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_rapid.last.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_rapid.last.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
                 <Statistic size='mini' color='orange' inverted style={{ marginBottom: '0' }}>
                     <Statistic.Value>{props.data.chess_rapid.best.rating}</Statistic.Value>
                     <Statistic.Label>Best Rapid Rating</Statistic.Label>
-                    <h6 style={{ marginTop: '0' }}>{moment.unix(props.data.chess_rapid.best.date).format("MM/DD/YYYY")}</h6>
+                    <h6 style={{ marginTop: '0', marginBottom: '0' }}>{moment.unix(props.data.chess_rapid.best.date).format("MM/DD/YYYY")}</h6>
                 </Statistic>
             </div>
         </>

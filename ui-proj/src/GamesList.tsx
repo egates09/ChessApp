@@ -138,7 +138,7 @@ export default function GamesList() {
         <>
             <Divider inverted horizontal>egates09's Recent Games {`(${month}/${year})`} </Divider>
 
-            <div style={{ padding: '2%', height: '500px', overflowY: 'auto', paddingLeft: '15%', paddingRight: '15%' }}>
+            <div style={{ padding: '2%', height: '350px', overflowY: 'auto', paddingLeft: '17%', paddingRight: '17%' }}>
                 <Grid>
                     {
                         games.games.map((game, i) => {
@@ -154,8 +154,10 @@ export default function GamesList() {
 
                                                         <Message color={game.white.result === 'win' && game.white.username === 'egates09' ? 'green' : 'red'}>
                                                             <Message.Header>
-                                                                <div>
-                                                                    {game.time_class.toUpperCase()}: {`(${game.white.rating})`} {game.white.username} vs. {`(${game.black.rating})`} {game.black.username}
+                                                                <div style={{ display: 'flex' }}>
+                                                                    <span>{game.white.result === 'win' && game.white.username === 'egates09' ? 'WIN' : 'LOSE'}</span>
+                                                                    {/* <span style={{ marginLeft: '15%' }}>{` (${game.time_class.charAt(0).toUpperCase() + game.time_class.slice(1)}) `}:</span> */}
+                                                                    <span style={{ marginLeft: '20%' }}>{game.white.username} {`(${game.white.rating})`} vs. {game.black.username} {`(${game.black.rating})`}</span>
                                                                 </div>
                                                             </Message.Header>
                                                         </Message>
