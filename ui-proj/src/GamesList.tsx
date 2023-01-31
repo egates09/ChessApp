@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ChessGames from "../models/ChessGames"
-import { Divider, Grid, List, Message } from "semantic-ui-react";
+import { Divider, Grid, Icon, List, Message } from "semantic-ui-react";
 import moment from 'moment';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from "chart.js";
 import { Doughnut, Line, Pie } from "react-chartjs-2";
@@ -32,11 +32,46 @@ export default function GamesList() {
     const [drawInsufficient, setDrawInsufficient] = useState(0);
     const [drawStalemate, setDrawStalemate] = useState(0);
 
-    const year = moment().get('year');
-    const month = Number(moment().get('month') + 1) < 10 ? `0${moment().get('month') + 1}` : moment().get('month') + 1;
+    let yearString = moment().get('year');
+    let monthString = Number(moment().get('month') + 1) < 10 ? `0${moment().get('month') + 1}` : moment().get('month') + 1;
+
+    // const [monthString, setMonthString] = useState(month);
+    // const [yearString, setYearString] = useState(year);
 
     let lineDataArray: number[] = [];
     let lineDataLabels: string[] = [];
+
+    const handleArrowClick = (leftClick: boolean) => {
+        if (leftClick) {
+            //decrease date
+            if (Number(monthString) === 1) {
+                monthString = '12';
+                yearString = (Number(yearString) - 1);
+            } else {
+                if (Number(monthString) <= 10) {
+                    monthString = (`0${Number(monthString) - 1}`)
+                }
+                else {
+                    monthString = (`${Number(monthString) - 1}`)
+                }
+            }
+        }
+        else {
+            if (Number(monthString) === 12) {
+                monthString = ('1');
+                yearString = (Number(yearString) + 1);
+            } else {
+                if (Number(monthString) < 9) {
+                    monthString = (`0${Number(monthString) + 1}`)
+                }
+                else {
+                    monthString = (`${Number(monthString) + 1}`)
+                }
+            }
+        }
+        getGames();
+
+    }
 
     const pieData = {
         labels: ['Wins', 'Losses', 'Draws'],
@@ -205,7 +240,10 @@ export default function GamesList() {
     }
 
     const getGames = async () => {
-        await fetch(`https://api.chess.com/pub/player/egates09/games/${year}/${month}`)
+        console.log(yearString)
+        console.log(monthString)
+
+        await fetch(`https://api.chess.com/pub/player/egates09/games/${yearString}/${monthString}`)
             .then((response) => response.json())
             .then((data) => { populateGameData(data); calculateWinLoss(data); calculateLineChart(data) })
     }
@@ -325,7 +363,7 @@ export default function GamesList() {
 
     return (
         <>
-            <Divider inverted horizontal>Recent Games {`(${month}/${year})`} </Divider>
+            <Divider inverted horizontal><Icon name="arrow left" onClick={() => handleArrowClick(true)} /> Recent Games {`(${monthString}/${yearString})`} <Icon name="arrow right" onClick={() => handleArrowClick(false)} /> </Divider>
 
             <div style={{ padding: '2%', height: '350px', overflowY: 'auto', paddingLeft: '12%', paddingRight: '12%' }}>
                 <Grid>
@@ -343,7 +381,8 @@ export default function GamesList() {
                                                             <Message.Header>
                                                                 <div style={{ display: 'flex' }}>
                                                                     <span>{game.white.result === 'win' && game.white.username === 'egates09' ? 'WIN' : game.white.result === game.black.result ? 'DRAW' : 'LOSE'}</span>
-                                                                    <span style={{ marginLeft: game.white.result === game.black.result ? '17%' : '20%' }}>{game.white.username} {`(${game.white.rating})`} vs. {game.black.username} {`(${game.black.rating})`}</span>
+                                                                    <span style={{ marginLeft: '10%' }}>
+                                                                        {game.white.username} {`(${game.white.rating})`} vs. {game.black.username} {`(${game.black.rating})`}</span>
                                                                 </div>
                                                             </Message.Header>
                                                         </Message>
