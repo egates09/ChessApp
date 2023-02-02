@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ChessGames from "../models/ChessGames"
-import { Divider, Grid, Icon, List, Message } from "semantic-ui-react";
+import { Dimmer, Divider, Grid, Icon, List, Loader, Message } from "semantic-ui-react";
 import moment from 'moment';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from "chart.js";
 import { Doughnut, Line, Pie } from "react-chartjs-2";
@@ -11,6 +11,8 @@ export default function GamesList() {
     const defaultChessGames: ChessGames = {
         games: []
     }
+
+    const [loading, setLoading] = useState(false);
 
     const [games, setGames] = useState(defaultChessGames);
 
@@ -35,8 +37,8 @@ export default function GamesList() {
     let yearString = moment().get('year');
     let monthString = Number(moment().get('month') + 1) < 10 ? `0${moment().get('month') + 1}` : moment().get('month') + 1;
 
-    // const [monthString, setMonthString] = useState(month);
-    // const [yearString, setYearString] = useState(year);
+    const [monthDisplay, setMonthDisplay] = useState(monthString);
+    const [yearDisplay, setYearDisplay] = useState(yearString);
 
     let lineDataArray: number[] = [];
     let lineDataLabels: string[] = [];
@@ -44,31 +46,39 @@ export default function GamesList() {
     const handleArrowClick = (leftClick: boolean) => {
         if (leftClick) {
             //decrease date
-            if (Number(monthString) === 1) {
+            if (Number(monthDisplay) === 1) {
                 monthString = '12';
-                yearString = (Number(yearString) - 1);
+                yearString = (Number(yearDisplay) - 1);
             } else {
-                if (Number(monthString) <= 10) {
-                    monthString = (`0${Number(monthString) - 1}`)
+                if (Number(monthDisplay) <= 10) {
+                    monthString = (`0${Number(monthDisplay) - 1}`)
                 }
                 else {
-                    monthString = (`${Number(monthString) - 1}`)
+                    monthString = (`${Number(monthDisplay) - 1}`)
                 }
+
+                yearString = yearDisplay;
             }
         }
         else {
-            if (Number(monthString) === 12) {
+            if (Number(monthDisplay) === 12) {
                 monthString = ('1');
-                yearString = (Number(yearString) + 1);
+                yearString = (Number(yearDisplay) + 1);
             } else {
-                if (Number(monthString) < 9) {
-                    monthString = (`0${Number(monthString) + 1}`)
+                if (Number(monthDisplay) < 9) {
+                    monthString = (`0${Number(monthDisplay) + 1}`)
                 }
                 else {
-                    monthString = (`${Number(monthString) + 1}`)
+                    monthString = (`${Number(monthDisplay) + 1}`)
                 }
+
+                yearString = yearDisplay;
             }
         }
+
+        setMonthDisplay(monthString);
+        setYearDisplay(yearString);
+
         getGames();
 
     }
@@ -240,12 +250,12 @@ export default function GamesList() {
     }
 
     const getGames = async () => {
-        console.log(yearString)
-        console.log(monthString)
+        setLoading(true);
 
         await fetch(`https://api.chess.com/pub/player/egates09/games/${yearString}/${monthString}`)
             .then((response) => response.json())
             .then((data) => { populateGameData(data); calculateWinLoss(data); calculateLineChart(data) })
+            .finally(() => setLoading(false))
     }
 
     const populateGameData = (data: ChessGames) => {
@@ -299,7 +309,7 @@ export default function GamesList() {
                     default: break;
                 }
             }
-            else if (e.black.result === 'win') { //??? TODO: <----
+            else if (e.black.result === 'win') {
                 loss++
 
                 // my win conditions
@@ -363,37 +373,49 @@ export default function GamesList() {
 
     return (
         <>
-            <Divider inverted horizontal><Icon name="arrow left" onClick={() => handleArrowClick(true)} /> Recent Games {`(${monthString}/${yearString})`} <Icon name="arrow right" onClick={() => handleArrowClick(false)} /> </Divider>
+            {loading &&
+                <Dimmer active>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            }
+
+            <Divider inverted horizontal><Icon style={{ cursor: 'pointer' }} name="arrow left" onClick={() => handleArrowClick(true)} /> Recent Games {`(${monthDisplay}/${yearDisplay})`} <Icon style={{ cursor: 'pointer' }} name="arrow right" onClick={() => handleArrowClick(false)} /> </Divider>
 
             <div style={{ padding: '2%', height: '350px', overflowY: 'auto', paddingLeft: '12%', paddingRight: '12%' }}>
                 <Grid>
                     {
-                        games.games.map((game, i) => {
-                            return (
-                                <Grid.Row key={i} style={{ padding: 0 }}>
-                                    <Grid.Column>
-                                        <List divided relaxed>
-                                            <List.Item>
-                                                <List.Content verticalAlign='middle'>
-                                                    <List.Header as='a'
-                                                        onClick={() => { window.open(game.url) }}>
-                                                        <Message color={game.white.result === 'win' && game.white.username === 'egates09' ? 'green' : game.white.result === game.black.result ? 'grey' : 'red'}>
-                                                            <Message.Header>
-                                                                <div style={{ display: 'flex' }}>
-                                                                    <span>{game.white.result === 'win' && game.white.username === 'egates09' ? 'WIN' : game.white.result === game.black.result ? 'DRAW' : 'LOSE'}</span>
-                                                                    <span style={{ marginLeft: '10%' }}>
-                                                                        {game.white.username} {`(${game.white.rating})`} vs. {game.black.username} {`(${game.black.rating})`}</span>
-                                                                </div>
-                                                            </Message.Header>
-                                                        </Message>
-                                                    </List.Header>
-                                                </List.Content>
-                                            </List.Item>
-                                        </List>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )
-                        })
+                        games.games.length > 0 ?
+                            games.games.map((game, i) => {
+                                return (
+                                    <Grid.Row key={i} style={{ padding: 0 }}>
+                                        <Grid.Column>
+                                            <List divided relaxed>
+                                                <List.Item>
+                                                    <List.Content verticalAlign='middle'>
+                                                        <List.Header as='a'
+                                                            onClick={() => { window.open(game.url) }}>
+                                                            <Message color={game.white.result === 'win' && game.white.username === 'egates09' ? 'green' : game.white.result === game.black.result ? 'grey' : 'red'}>
+                                                                <Message.Header>
+                                                                    <div style={{ display: 'flex' }}>
+                                                                        <span>{game.white.result === 'win' && game.white.username === 'egates09' ? 'WIN' : game.white.result === game.black.result ? 'DRAW' : 'LOSE'}</span>
+                                                                        <span style={{ marginLeft: '10%' }}>
+                                                                            {game.white.username} {`(${game.white.rating})`} vs. {game.black.username} {`(${game.black.rating})`}</span>
+                                                                    </div>
+                                                                </Message.Header>
+                                                            </Message>
+                                                        </List.Header>
+                                                    </List.Content>
+                                                </List.Item>
+                                            </List>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                )
+                            })
+                            :
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '350px' }}>
+                                No data available.
+                            </div>
+
                     }
                 </Grid>
             </div>
@@ -405,7 +427,7 @@ export default function GamesList() {
                     <Grid.Column> Total Wins: {wins}</Grid.Column>
                     <Grid.Column> Total Losses: {losses}</Grid.Column>
                     <Grid.Column> Total Draws: {draws}</Grid.Column>
-                    <Grid.Column> W/L/D %: {Math.round((wins / games.games.length) * 100)}/{Math.round((losses / games.games.length) * 100)}/{Math.round((draws / games.games.length) * 100)}</Grid.Column>
+                    <Grid.Column> W/L/D %: {games.games.length === 0 ? 0 : Math.round((wins / games.games.length) * 100)}/{games.games.length === 0 ? 0 : Math.round((losses / games.games.length) * 100)}/{games.games.length === 0 ? 0 : Math.round((draws / games.games.length) * 100)}</Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={4}>
