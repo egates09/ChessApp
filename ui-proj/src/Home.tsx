@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Player from "../models/Player"
-import { Card, Container, Flag, Grid, Image, Loader, Segment, Reveal, Button } from "semantic-ui-react";
+import { Card, Container, Flag, Grid, Image, Loader, Segment, Reveal
+    // , Button 
+    } from "semantic-ui-react";
 import moment from "moment";
 import Stats from "./Stats";
 import Statistics from "../models/Statistics";
@@ -45,8 +47,7 @@ export default function Home() {
 
     const [playerData, setPlayerData] = useState(player)
     const [stats, setStats] = useState(defaultStats);
-
-    let loading: boolean = false;
+    const [isLoading, setIsLoading] = useState(false);
 
     const getPlayerData = async () => {
         await fetch('https://api.chess.com/pub/player/egates09')
@@ -61,17 +62,17 @@ export default function Home() {
     }
 
     useEffect(() => {
-        loading = true;
-        Promise.all([getPlayerData(), getStats()]).finally(() => { loading = false; })
+        setIsLoading(true)
+        Promise.all([getPlayerData(), getStats()]).finally(() => { setIsLoading(false) })
     }, [])
 
     return (
         <>
-            {loading &&
+            {isLoading &&
                 <Loader />
             }
             {
-                !loading &&
+                !isLoading &&
                 <Segment inverted style={{ padding: '2% 0' }}>
                     <Container>
                         <Grid textAlign="center">
